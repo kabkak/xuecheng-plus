@@ -10,15 +10,12 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 public class MinIOTest {
 
-  //   创建MinioClient对象
+    //   创建MinioClient对象
     static MinioClient minioClient =
             MinioClient.builder()
                     .endpoint("http://192.168.75.130:9000")
@@ -39,7 +36,8 @@ public class MinIOTest {
                             .object("2023-03-02 105833.png")
                             .filename("C:\\Users\\kab\\Pictures\\Screenshots\\屏幕截图 2023-03-02 105833.png")
                             .build()
-            ); System.out.println("上传成功");
+            );
+            System.out.println("上传成功");
         } catch (Exception e) {
             System.out.println("上传失败");
         }
@@ -71,11 +69,53 @@ public class MinIOTest {
     }
 
     @Test
+    public void testChunk1() throws IOException {
+        File fileSource = new File("C:\\Users\\kab\\Desktop\\程序员数学v2.0-小傅哥.pdf");
+        String chunkStr = "C:\\Users\\kab\\Desktop\\xxs\\";
+        File chunk = new File(chunkStr);
+        if (!chunk.exists()) {
+            chunk.mkdirs();
+        }
+        // 分块大小 1M
+        int chunkSize = 1024 * 1024 * 1;
+        //分块次数
+        int chunkNum = (int) (fileSource.length() / chunkSize) + 1;
+        //缓存区
+        byte[] bytes = new byte[1024];
+        // 读取源文件流
+        InputStream inputStream = new FileInputStream(fileSource);
+        for (int i = 0; i < chunkNum; i++) {
+            File file = new File(chunkStr + i);
+            if (file.exists()) {
+                file.delete();
+            }
+            if (file.createNewFile()) {
+                int len;
+                // 获取分块文件输出流
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                while ((len = inputStream.read(bytes)) != -1) {
+                    fileOutputStream.write(bytes, 0, len);
+
+                    // 写满就停
+                    if (file.length() >= chunkSize) break;
+                }
+                fileOutputStream.close();
+            }
+
+        }
+        inputStream.close();
+        System.out.println("分块完成");
+
+
+    }
+
+    //RandomAccessFile允许在文件中的任意位置读写，这在处理大文件时可以提高效率，因为它不需要一次性加载整个文件到内存
+    @Test
     public void testChunk() throws IOException {
         // 源文件
-        File sourceFile = new File("D:\\BaiduNetdiskDownload\\星际牛仔1998\\星际牛仔1.mp4");
+        File sourceFile = new File("C:\\Users\\kab\\Desktop\\程序员数学v2.0-小傅哥.pdf");
         // 块文件路径
-        String chunkPath = "D:\\BaiduNetdiskDownload\\星际牛仔1998\\chunk\\";
+        String chunkPath = "C:\\Users\\kab\\Desktop\\xxs2\\";
         File chunkFolder = new File(chunkPath);
         if (!chunkFolder.exists()) {
             chunkFolder.mkdirs();
@@ -88,6 +128,7 @@ public class MinIOTest {
         byte[] buffer = new byte[1024];
         // 使用RandomAccessFile访问文件
         RandomAccessFile raf_read = new RandomAccessFile(sourceFile, "r");
+
         // 遍历分块，依次向每一个分块写入数据
         for (int i = 0; i < chunkNum; i++) {
             // 创建分块文件，默认文件名 path + i，例如chunk\1  chunk\2
@@ -99,6 +140,7 @@ public class MinIOTest {
             if (newFile) {
                 int len;
                 RandomAccessFile raf_write = new RandomAccessFile(file, "rw");
+
                 // 向分块文件写入数据
                 while ((len = raf_read.read(buffer)) != -1) {
                     raf_write.write(buffer, 0, len);
@@ -128,7 +170,9 @@ public class MinIOTest {
         // 文件名升序排序
         File[] files = chunkFolder.listFiles();
         List<File> fileList = Arrays.asList(files);
-        Collections.sort(fileList, Comparator.comparingInt(o -> Integer.parseInt(o.getName())));
+
+        Collections.sort(fileList, Comparator.comparing(file -> Integer.parseInt(file.getName())));
+
         // 合并文件
         for (File chunkFile : fileList) {
             RandomAccessFile raf_read = new RandomAccessFile(chunkFile, "r");
