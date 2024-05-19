@@ -4,10 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PageParams {
     // 默认起始页码
     public static final long DEFAULT_PAGE_CURRENT = 1L;

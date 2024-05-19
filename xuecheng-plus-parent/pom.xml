@@ -8,18 +8,12 @@
         <version>2.3.7.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.xuecheng</groupId>
     <artifactId>xuecheng-plus-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>xuecheng-plus-parent</name>
     <description>xuecheng-plus-parent</description>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-    </dependencies>
-    <packaging>pom</packaging>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,6 +37,14 @@
         <swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+    <packaging>pom</packaging>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -59,12 +61,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.alibaba.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-alibaba-dependencies</artifactId>-->
+<!--                <version>${spring-cloud-alibaba.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-cloud-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <version>2.2.6.RELEASE</version>
             </dependency>
             <!-- lombok，简化类的构建-->
             <dependency>
@@ -132,6 +139,7 @@
                 <version>${commons-lang.version}</version>
             </dependency>
             <!-- 分布式文件系统 minIO的客户端API包 -->
+
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
@@ -165,7 +173,7 @@
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
+                <version>4.9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -185,7 +193,7 @@
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
+                <version>7.12.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
